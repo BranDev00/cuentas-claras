@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cuentas Claras</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Logo reutilizable: dos burbujas (te deben / debes) y una palomita de "cuentas claras" -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="logo" viewBox="0 0 120 120">
+    <rect width="120" height="120" rx="34" style="fill:var(--logo)"/>
+    <circle cx="46" cy="54" r="27" fill="#12B76A"/>
+    <circle cx="76" cy="66" r="23" fill="#F04438"/>
+    <path d="M36 62l14 14 30-32" fill="none" stroke="#FFD23F" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+</svg>
+
+<main>
+  <!-- Barra superior (solo dentro de la app) -->
+  <header id="top" class="top" hidden>
+    <span class="mark"><svg class="logo sm" role="img" aria-label="Cuentas Claras"><use href="#logo"/></svg><span class="d">Cuentas Claras</span></span>
+    <button class="pill out" id="out" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      Cerrar sesión
+    </button>
+  </header>
+
+  <!-- 1. Inicio de sesión -->
+  <section id="login" class="view center">
+    <div class="lockup">
+      <svg class="logo" role="img" aria-label="Logo de Cuentas Claras"><use href="#logo"/></svg>
+      <span class="d name">Cuentas Claras</span>
+    </div>
+    <h1 class="hero d">Las cuentas claras conservan la amistad</h1>
+    <p class="lead">Anota quién te debe y a quién le debes, en la moneda que quieras. Gratis, con tu cuenta.</p>
+    <form id="af" class="authform">
+      <input id="email" type="email" placeholder="Correo" required autocomplete="email" aria-label="Correo">
+      <input id="pass" type="password" placeholder="Contraseña" required autocomplete="current-password" aria-label="Contraseña">
+      <button class="btn" type="submit">Entrar</button>
+      <button class="btn alt" type="button" id="goReg">Crear cuenta</button>
+    </form>
+    <p class="msg" id="amsg" role="status"></p>
+  </section>
+
+  <!-- 2. Registro (pantalla aparte) -->
+  <section id="reg" class="view center" hidden>
+    <div class="lockup sm">
+      <svg class="logo" role="img" aria-label="Logo de Cuentas Claras"><use href="#logo"/></svg>
+    </div>
+    <h1 class="hero d">Crea tu cuenta</h1>
+    <p class="lead">Te enviaremos un correo para confirmar que es tuyo. Solo después de confirmarlo podrás entrar.</p>
+    <form id="rf" class="authform">
+      <input id="remail" type="email" placeholder="Correo" required autocomplete="email" aria-label="Correo">
+      <input id="rpass" type="password" minlength="8" placeholder="Contraseña (mínimo 8 caracteres)" required autocomplete="new-password" aria-label="Contraseña">
+      <input id="rpass2" type="password" minlength="8" placeholder="Repite la contraseña" required autocomplete="new-password" aria-label="Repite la contraseña">
+      <label class="check">
+        <input type="checkbox" id="rterms" required>
+        <span>Tengo 18 años o más y acepto la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a> y los <a href="terminos.html" target="_blank" rel="noopener">términos de uso</a>.</span>
+      </label>
+      <button class="btn" type="submit" id="rbtn">Crear mi cuenta</button>
+      <button class="btn alt" type="button" id="goLogin">Ya tengo cuenta</button>
+    </form>
+    <p class="msg" id="rmsg" role="status"></p>
+  </section>
+
+  <!-- 3. Revisa tu correo -->
+  <section id="sent" class="view center" hidden>
+    <svg class="mail" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/></svg>
+    <h1 class="hero d">Revisa tu correo</h1>
+    <p class="lead">Enviamos un enlace de confirmación a <strong id="sentTo"></strong>. Ábrelo para activar tu cuenta y luego inicia sesión. Si no llega, mira en spam.</p>
+    <div class="authform">
+      <button class="btn" type="button" id="toLogin">Ya confirmé, iniciar sesión</button>
+      <button class="btn alt" type="button" id="resend">Reenviar correo</button>
+    </div>
+    <p class="msg" id="smsg" role="status"></p>
+  </section>
+
+  <!-- 4. La app -->
+  <section id="app" data-tab="owed" hidden>
+    <div class="tabs" role="group" aria-label="Tipo de deuda">
+      <button id="t-owed" type="button">Me deben</button>
+      <button id="t-owe" type="button">Yo debo</button>
+    </div>
+    <div class="curbar">
+      <label for="curSel">Moneda</label>
+      <select id="curSel" class="sel"></select>
+    </div>
+    <p class="lbl" id="lbl">Te deben en total</p>
+    <p class="total" id="total" aria-live="polite">$0</p>
+    <p class="sub" id="sub"></p>
+    <div class="chips" id="others" hidden></div>
+    <div id="field"></div>
+    <p class="msg" id="msg" role="status"></p>
+    <div class="foot">
+      <button class="pill clean" id="clear" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 10v6M14 10v6"/></svg>
+        Quitar pagadas <span class="count" id="clearN">0</span>
+      </button>
+    </div>
+    <button class="btn d" id="fab" type="button">+ Nueva deuda</button>
+  </section>
+  <nav class="legalnav" aria-label="Información legal">
+    <a href="privacidad.html">Privacidad</a>
+    <a href="terminos.html">Términos</a>
+    <button class="linkbtn" id="delOpen" type="button" hidden>Eliminar mi cuenta</button>
+  </nav>
+</main>
+
+<dialog id="addD">
+  <form id="f">
+    <h3>Nueva deuda</h3>
+    <input id="who" placeholder="¿Quién?" required autocomplete="off" aria-label="Quién">
+    <label class="fl" for="curAdd">Moneda <small>(queda fija hasta que la cambies)</small></label>
+    <select id="curAdd" class="sel"></select>
+    <label class="fl" for="amt">Valor</label>
+    <input id="amt" type="number" min="0.01" step="any" inputmode="decimal" placeholder="Ej: 50000" required>
+    <input id="note" placeholder="¿Por qué? (opcional)" autocomplete="off" aria-label="Motivo">
+    <button class="btn" type="submit">Hacer crecer la burbuja</button>
+    <button class="btn alt" type="button" data-close>Cancelar</button>
+  </form>
+</dialog>
+
+<dialog id="detD">
+  <div class="col">
+    <h3 id="dWho"></h3>
+    <p id="dAmt"></p>
+    <p id="dNote"></p>
+    <p id="dDate"></p>
+    <button class="btn" id="dPaid" type="button"></button>
+    <button class="btn bad" id="dDel" type="button">Borrar</button>
+    <button class="btn alt" type="button" data-close>Cerrar</button>
+  </div>
+</dialog>
+
+<dialog id="delD">
+  <div class="col">
+    <h3>Eliminar mi cuenta</h3>
+    <p class="lead2">Se borrarán de forma permanente tu cuenta y todas tus deudas. Esta acción no se puede deshacer.</p>
+    <button class="btn bad" id="delYes" type="button">Sí, eliminar todo</button>
+    <button class="btn alt" type="button" data-close>Cancelar</button>
+    <p class="msg" id="dmsg" role="status"></p>
+  </div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
